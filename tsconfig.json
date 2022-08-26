@@ -3,6 +3,7 @@
   "extends": "@vue/tsconfig/tsconfig.web.json",
   "compilerOptions": {
     "newLine": "lf",
+    "allowJs": true,
     "noImplicitAny": false,
     "paths": { "@/*": ["./src/*"] },
     "types": ["vite/client", "vitest/globals", "vue", "vuetify"]

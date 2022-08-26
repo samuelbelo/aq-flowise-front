@@ -1,6 +1,6 @@
 /** Vue Router Configure */
 import { nextTick } from 'vue';
-import type { NavigationGuardNext, Route } from 'vue-router';
+import type {NavigationGuardNext, Route, RouteRecord} from 'vue-router';
 import type { Position, PositionResult } from 'vue-router/types/router';
 import {
   createRouter,
@@ -15,20 +15,90 @@ import store from '@/store';
 /** Router Config */
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
-    name: 'Home',
-    component: () => import('@/views/HomePage.vue'),
+    path: '/login',
+    name: 'Login',
+    meta: {
+      guest: true,
+    },
+    component: () => import('@/views/Login.vue'),
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import('@/views/AboutPage.vue'),
+    path: '/',
+    name: 'Dashboard',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Dashboard/Dashboard.vue'),
+  },
+  {
+    path: '/administration',
+    name: 'Administration',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Administration/Administration.vue'),
+  },
+  {
+    path: '/events',
+    name: 'Events',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Events/Events.vue'),
+  },
+  {
+    path: '/areas',
+    name: 'Areas',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Areas/Areas.vue'),
+  },
+  {
+    path: '/meters',
+    name: 'Meters',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Meters/Meters.vue'),
+  },
+  {
+    path: '/reports',
+    name: 'Reports',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Reports/Reports.vue'),
+  },
+  {
+    path: '/water-balance',
+    name: 'Water Balance',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/WaterBalance/WaterBalance.vue'),
+  },
+  {
+    path: '/administration',
+    name: 'Administration',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Administration/Administration.vue'),
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import('@/views/Settings/Settings.vue'),
   },
   {
     path: '*',
     name: 'Error',
     component: () => import('@/views/ErrorPage.vue'),
-  },
+  }
 ];
 
 const router: Router = createRouter({
@@ -55,8 +125,16 @@ const router: Router = createRouter({
 
 router.beforeEach(
   async (_to: Route, _from: Route, next: NavigationGuardNext<Vue>) => {
-    // Show Loading
-    store.dispatch('setLoading', true);
+    if(_to.matched.some((record: RouteRecord) => record.meta.requiresAuth)) {
+      if(store.getters['AuthModule/isAuthenticated']){
+        next()
+        store.dispatch('setLoading', false);
+        return
+      }
+      next('/login')
+    } else {
+      next()
+    }
     await nextTick();
 
     // @see https://github.com/championswimmer/vuex-persist#how-to-know-when-async-store-has-been-replaced
@@ -64,11 +142,23 @@ router.beforeEach(
 
     next();
   }
+
 );
+router.beforeEach((to:Route, from: Route, next: NavigationGuardNext<Vue>) => {
+  if (to.matched.some((record: RouteRecord) => record.meta.guest)) {
+    if (store.getters['AuthModule/isAuthenticated']) {
+      next("/");
+      return;
+    }
+    next();
+  } else {
+    next();
+  }
+});
+
 
 router.afterEach(() => {
   // Hide Loading
-  store.dispatch('setLoading', false);
 });
 
 export default router;

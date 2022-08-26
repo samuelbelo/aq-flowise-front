@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue2';
 import Components from 'unplugin-vue-components/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig, type UserConfig } from 'vite';
+import mkcert from 'vite-plugin-mkcert'
 import checker from 'vite-plugin-checker';
 import path from 'path';
 import fs from 'fs';
@@ -13,6 +14,7 @@ import fs from 'fs';
  * @see {@link https://vitejs.dev/config/}
  */
 export default defineConfig(async ({ mode }): Promise<UserConfig> => {
+  // @ts-ignore
   const config: UserConfig = {
     // // https://vitejs.dev/config/shared-options.html#base
     base: './',
@@ -33,11 +35,16 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
         // Allow serving files from one level up to the project root
         allow: ['..'],
       },
+      https: true,
+      port: 3000,
     },
     plugins: [
+      mkcert(),
       // Vue2
       // https://github.com/vitejs/vite-plugin-vue2
-      vue(),
+      vue({
+        reactivityTransform: true
+      }),
       // unplugin-vue-components
       // https://github.com/antfu/unplugin-vue-components
       Components({

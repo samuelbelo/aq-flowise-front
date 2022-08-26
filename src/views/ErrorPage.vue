@@ -5,7 +5,7 @@
         <v-icon color="grey" size="96px">mdi-alert-circle-outline</v-icon>
       </v-card-title>
       <v-card-subtitle class="text-center m-t-30">
-        {{ error || 'File not Found.' }}
+        {{ error || 'Page not Found.' }}
       </v-card-subtitle>
     </v-card>
   </v-container>

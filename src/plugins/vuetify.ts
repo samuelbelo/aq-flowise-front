@@ -27,6 +27,20 @@ export default createVuetify({
   },
 */
   theme: {
+    themes: {
+      light: {
+        primary: '#60c5cf',
+        secondary: '#60c5cf',
+        accent: '#82B1FF',
+        error: '#FF5252',
+        info: '#2196F3',
+        success: '#4CAF50',
+        warning: '#FFC107',
+        mainBar: '#D4D4D4',
+        viewTitle: '#60c5cf',
+        secondaryBarBackground: '#f1f1f1'
+      },
+    },
     options: {
       themeCache: {
         // https://vuetifyjs.com/features/theme/#section-30ad30e330c330b730e5
